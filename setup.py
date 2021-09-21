@@ -14,7 +14,7 @@ setup(
     },
     packages=find_packages(),
     install_requires=[
-        'requests',
-        'jsonrpcclient',
+        'requests==2.26.0',
+        'jsonrpcclient==3.3.6',
     ],
 )
