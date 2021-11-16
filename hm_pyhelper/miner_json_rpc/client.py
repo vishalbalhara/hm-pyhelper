@@ -4,6 +4,9 @@ from hm_pyhelper.miner_json_rpc.exceptions import MinerConnectionError
 from hm_pyhelper.miner_json_rpc.exceptions import MinerMalformedURL
 from hm_pyhelper.miner_json_rpc.exceptions import MinerRegionUnset
 
+from hm_pyhelper.logger import get_logger
+
+LOGGER = get_logger(__name__)
 
 class Client(object):
 
@@ -13,16 +16,16 @@ class Client(object):
     def __fetch_data(self, method, **kwargs):
         try:
             response = request(self.url, method, **kwargs)
+            LOGGER.info("=============================")
+            LOGGER.info(response.data.result)
+            LOGGER.info("=============================")
             return response.data.result
-        except requests.exceptions.ConnectionError:
-            raise MinerConnectionError(
-                "Unable to connect to miner %s" % self.url
-            )
-        except requests.exceptions.MissingSchema:
-            raise MinerMalformedURL(
-                "Miner JSONRPC URL '%s' is not a valid URL"
-                % self.url
-            )
+        except requests.exceptions.ConnectionError as e:
+            LOGGER.exception(e)
+            return str(e)
+        except requests.exceptions.MissingSchema as e:
+            LOGGER.exception(e)
+            return str(e)
 
     def get_height(self):
         return self.__fetch_data('info_height')
