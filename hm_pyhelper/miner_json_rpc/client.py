@@ -16,37 +16,76 @@ class Client(object):
     def __fetch_data(self, method, **kwargs):
         try:
             response = request(self.url, method, **kwargs)
-            LOGGER.info("=============================")
-            LOGGER.info(response.data.result)
-            LOGGER.info("=============================")
             return response.data.result
-        except requests.exceptions.ConnectionError as e:
-            LOGGER.exception(e)
-            return str(e)
-        except requests.exceptions.MissingSchema as e:
-            LOGGER.exception(e)
-            return str(e)
-
-    def get_height(self):
-        return self.__fetch_data('info_height')
-
-    def get_region(self):
-        region = self.__fetch_data('info_region')
-        if not region.get('region'):
-            raise MinerRegionUnset(
-                "Miner at %s does not have an asserted region"
+        except requests.exceptions.ConnectionError:
+            raise MinerConnectionError(
+                "Unable to connect to miner %s" % self.url
+            )
+        except requests.exceptions.MissingSchema:
+            raise MinerMalformedURL(
+                "Miner JSONRPC URL '%s' is not a valid URL"
                 % self.url
             )
-        return region
+        except Exception as e:
+            raise MinerConnectionError(
+                "Unable to connect to miner %s" % e
+            ).with_traceback(e.__traceback__)
+
+    def get_height(self):
+        try:
+            return self.__fetch_data('info_height')
+        except MinerConnectionError as e:
+            raise MinerConnectionError(e).\
+                with_traceback(e.__traceback__)
+        except MinerMalformedURL as e:
+            raise MinerMalformedURL(e).\
+                with_traceback(e.__traceback__)
+
+    def get_region(self):
+        try:
+            region = self.__fetch_data('info_region')
+            if not region.get('region'):
+                raise MinerRegionUnset(
+                    "Miner at %s does not have an asserted region"
+                    % self.url
+                )
+            return region
+        except MinerConnectionError as e:
+            raise MinerConnectionError(e).\
+                with_traceback(e.__traceback__)
+        except MinerMalformedURL as e:
+            raise MinerMalformedURL(e).\
+                with_traceback(e.__traceback__)
 
     def get_summary(self):
-        return self.__fetch_data('info_summary')
+        try:
+            return self.__fetch_data('info_summary')
+        except MinerConnectionError as e:
+            raise MinerConnectionError(e).\
+                with_traceback(e.__traceback__)
+        except MinerMalformedURL as e:
+            raise MinerMalformedURL(e).\
+                with_traceback(e.__traceback__)
 
     def get_peer_addr(self):
-        return self.__fetch_data('peer_addr')
+        try:
+            return self.__fetch_data('peer_addr')
+        except MinerConnectionError as e:
+            raise MinerConnectionError(e).\
+                with_traceback(e.__traceback__)
+        except MinerMalformedURL as e:
+            raise MinerMalformedURL(e).\
+                with_traceback(e.__traceback__)
 
     def get_peer_book(self):
-        return self.__fetch_data('peer_book', addr='self')
+        try:
+            return self.__fetch_data('peer_book', addr='self')
+        except MinerConnectionError as e:
+            raise MinerConnectionError(e).\
+                with_traceback(e.__traceback__)
+        except MinerMalformedURL as e:
+            raise MinerMalformedURL(e).\
+                with_traceback(e.__traceback__)
 
     def get_firmware_version(self):
         summary = self.get_summary()
