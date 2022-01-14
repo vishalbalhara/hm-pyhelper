@@ -1,5 +1,4 @@
 import requests
-from jsonrpcclient import parse
 from hm_pyhelper.miner_json_rpc.exceptions import MinerConnectionError
 from hm_pyhelper.miner_json_rpc.exceptions import MinerMalformedURL
 from hm_pyhelper.miner_json_rpc.exceptions import MinerRegionUnset
@@ -11,6 +10,7 @@ class Client(object):
         self.url = url
 
     def __fetch_data(self, method, **kwargs):
+        '''
         try:
             response = requests.request(method, self.url, **kwargs)
             parsed = parse(response.json())
@@ -24,6 +24,19 @@ class Client(object):
                 "Miner JSONRPC URL '%s' is not a valid URL"
                 % self.url
             )
+        '''
+        req_body = {
+            "jsonrpc": "2.0",
+            "id": 1,
+            "method": method,
+            "params": {}
+        }
+        resp = requests.post(self.URL, json=req_body)
+
+        if resp.status_code != 200:
+            raise Exception("Error happened")
+
+        return resp.json().get('result')
 
     def get_height(self):
         return self.__fetch_data('info_height')
