@@ -1,5 +1,4 @@
 import unittest
-from unittest.mock import patch
 import grpc
 from concurrent import futures
 from hm_pyhelper.gateway_grpc.client import GatewayClient
@@ -49,7 +48,6 @@ class TestData:
     expected_summary = {
         'region': region_name,
         'key': pubkey_decoded,
-        'gateway_version': "v1.0.0~alpha.23",
         'validator': {
             'height': height_res.height,
             'block_age': height_res.block_age,
@@ -81,7 +79,7 @@ class MockServicer(local_pb2_grpc.apiServicer):
 
 class TestGatewayGRPCClient(unittest.TestCase):
 
-    # we can start the real service hear by installing dpkg. But AFAIK
+    # we can start the real service here by installing dpkg. But AFAIK
     # our testing methods, real service exposes us to random failures
     def setUp(self):
         self.mock_server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
@@ -119,16 +117,8 @@ class TestGatewayGRPCClient(unittest.TestCase):
         with GatewayClient(f'localhost:{TestData.server_port}') as client:
             # summary when helium_gateway is not installed
             test_summary_copy = TestData.expected_summary.copy()
-            test_summary_copy['gateway_version'] = None
             self.assertIn(client.get_summary(),
                           [TestData.expected_summary, test_summary_copy])
-
-    @patch('subprocess.check_output', return_value=TestData.dpkg_output)
-    def test_get_gateway_version(self, mock_check_output):
-        mock_check_output.return_value = TestData.dpkg_output
-        with GatewayClient(f'localhost:{TestData.server_port}') as client:
-            self.assertIn(client.get_gateway_version(),
-                          [TestData.expected_summary['gateway_version'], None])
 
     def test_connection_failure(self):
         with self.assertRaises(grpc.RpcError):

@@ -1,8 +1,6 @@
 import base58
 import grpc
-import subprocess
 import json
-from typing import Union
 
 from hm_pyhelper.protos import blockchain_txn_add_gateway_v1_pb2, \
     local_pb2_grpc, local_pb2, region_pb2
@@ -117,7 +115,6 @@ class GatewayClient(object):
         return {
             'region': self.get_region(),
             'key': self.get_pubkey(),
-            'gateway_version': self.get_gateway_version(),
             'validator': {
                 'height': validator_info.height,
                 'block_age': validator_info.block_age,
@@ -146,22 +143,6 @@ class GatewayClient(object):
         if not values[0].value:
             raise ValueError(f'{key} not found on chain')
         return values[0]
-
-    def get_gateway_version(self) -> Union[str, None]:
-        '''
-        Returns the current version of the gateway package installed
-        '''
-        # NOTE:: there is a command line argument to helium-gateway
-        # but it is not exposed in the rpc, falling back to dpkg
-        try:
-            output = subprocess.check_output(['dpkg', '-s', 'helium_gateway'])
-            for line in output.decode().splitlines():
-                if line.strip().startswith('Version'):
-                    # dpkg has version without v but github tags begin with v
-                    return "v" + line.split(':')[1].strip()
-            return None
-        except subprocess.CalledProcessError:
-            return None
 
     def create_add_gateway_txn(self, owner_address: str, payer_address: str,
                                staking_mode: local_pb2.gateway_staking_mode = local_pb2.light,
