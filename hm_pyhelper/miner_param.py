@@ -173,7 +173,7 @@ def get_ethernet_addresses(diagnostics):
     # The order of the values in the lists is important!
     # It determines which value will be available for which key
     path_to_files = [
-        "/sys/class/net/eth0/address",
+        "/sys/class/net/wlan0/address",
         "/sys/class/net/wlan0/address"
     ]
     keys = ["E0", "W0"]
