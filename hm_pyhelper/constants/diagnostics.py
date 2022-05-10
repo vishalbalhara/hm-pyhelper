@@ -15,6 +15,10 @@ LTE_KEY = 'lte'
 ONBOARDING_KEY = 'onboarding_key'
 PF_KEY = 'legacy_pass_fail'
 LORA_KEY = 'lora'
+PUBLIC_KEY = 'public_key'
+SERIAL_NUMBER_KEY = 'serial_number'
+VARIANT_KEY = 'VARIANT'
+WIFI_MAC_ADDRESS_KEY = 'wifi_mac_address'
 
 # gatewayrs diagnostic keys
 VALIDATOR_ADDRESS_KEY = 'validator_address'
@@ -25,9 +29,3 @@ VALIDATOR_BLOCK_AGE = 'validator_block_age'
 GATEWAY_PUBKEY_KEY = 'gateway_pubkey'
 GATEWAY_REGION_KEY = 'gateway_region'
 GATEWAY_REGION_SHORT_KEY = 'RE'
-
-
-PUBLIC_KEY = 'public_key'
-SERIAL_NUMBER_KEY = 'serial_number'
-VARIANT_KEY = 'VARIANT'
-WIFI_MAC_ADDRESS_KEY = 'wifi_mac_address'
