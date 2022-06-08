@@ -109,6 +109,25 @@ variant_definitions = {
         'CONTAINS_IC_IDS': ['20953-RPI0W']
         },
 
+    # Desenart A35 Light Hotspot
+    'DESEN-RPIS13A35': {
+        'FRIENDLY': 'Nebra RPIS13A35 Light Hotspot',
+        'APPNAME': 'RPIS13A35 Light',
+        'SPIBUS': 'spidev1.0',
+        'KEY_STORAGE_BUS': '/dev/i2c-1',
+        'RESET': 17,
+        'MAC': 'wlan0',
+        'STATUS': 75,
+        'BUTTON': 76,
+        'ECCOB': True,
+        'TYPE': 'Light',
+        'CELLULAR': False,
+        'FCC_IDS': ['2AZDM-HNTLGTMC'],
+        'CONTAINS_FCC_IDS': ['2ABCB-RPI0W', '2ARPP-GL5712UX'],
+        'IC_IDS': ['27187-HNTLGTMC'],
+        'CONTAINS_IC_IDS': ['20953-RPI0W']
+        },
+
     # Nebra Pi 0 Light Hotspot USB Ethernet
     'NEBHNT-LGT-ZX': {
         'FRIENDLY': 'Nebra Pi 0 Light Hotspot XE',
