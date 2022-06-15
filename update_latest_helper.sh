@@ -1,6 +1,7 @@
 #! /bin/bash
 git add -u
 git commit -n 
+git push origin
 hm_pyhelper=$(git rev-parse --short HEAD)
 
 cd ../hm-diag || exit
